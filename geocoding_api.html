@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Geocoding API test </title>
+
+    <!--The bootstrap 4 js loading -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!--Google Map JS loading-->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgOGbuvuKu-fJmwmzP45Vveq7U4EwLhNk&callback=initMap&libraries=&v=weekly" defer></script>
+    <!--Axios JS loading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js" integrity="sha512-DZqqY3PiOvTP9HkjIWgjO6ouCbq+dxqWoJZ/Q+zPYNHmlnI2dQnbJ5bxAHpAMw+LXRm4D72EIRXzvcHQtE8/VQ==" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap css loading -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Main CSS loading -->
+    <link rel="stylesheet" href="./css/geocode_api_style_main.css">
+
+
+</head>
+<body>
+
+    <div class="container">
+        <h1> Geocoding API Test</h1>
+        <h2 id="text-center"> Enter Location : </h2>
+        <form action="" id="location-form">
+            <input type="text" id="location-input" class="form-control form-control-lg"/>
+            <button id="search" type="submmit" class="btn btn-primary btn-block mt-2">Search</button>
+        </form>
+
+        <div class="row">
+            <div class="col-12 mt-4">
+                Default Formatted Address : <div class="" id="formattedAddress"></div>
+            </div>
+
+            <div class="col-12 mt-2">
+                Address Components : <div class="" id="addressComponents"></div>
+            </div>
+
+            <div class="col-12 mt-2">
+                Geo Location : <div class="" id="geoLocation"></div>
+            </div>
+        </div>
+
+        <div class="row mt-4" >
+            <div class="col-8 mb-5">
+                Location Map :
+                <div id="map" ></div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
+<script src="./js/geocode_api_main.js"></script>
+
