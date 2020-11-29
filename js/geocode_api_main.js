@@ -3,12 +3,16 @@ let apiKey = "AIzaSyDgOGbuvuKu-fJmwmzP45Vveq7U4EwLhNk";
 let defaultLocation = "Yangon Zoo";
 let mapPinLocation = {};
 let zoomLevel = 0;
+let showAddress = "";
 
 //set default coordinate
 setLocation({ lat: 16.858486, lng: 96.166710 });
 
 //set default zoom level
-setZoomLevel(14);
+setZoomLevel(12);
+
+//set default show address
+setShowAddress("North Ookalapa Golf Club");
 
 //Get location form
 let locationForm = document.getElementById("location-form");
@@ -22,6 +26,7 @@ locationForm.addEventListener('submit', geocode);
 function initMap() {
     var center = this.mapPinLocation;
     var zoom = this.zoomLevel;
+    var showAddress = this.showAddress;
 
 
     let options = {
@@ -64,7 +69,7 @@ function initMap() {
         return marker;
     }
 
-    addMarker({ coords: center, label: "A1", content: "<p> North Ooakalapa Golf Club" });
+    addMarker({ coords: center, label: "A1", content: showAddress });
 
     //To fit zoom all coordinates
     /*var latlngBounds =  new google.maps.LatLngBounds();
@@ -87,6 +92,10 @@ function setLocation(location){
 
 function setZoomLevel(zoomLvl){
     this.zoomLevel = zoomLvl;
+}
+
+function setShowAddress(address){
+    this.showAddress = address;
 }
 
 
@@ -142,6 +151,7 @@ function geocode(e){
         document.getElementById('map').innerHTML="";
         setLocation(geolocation);
         setZoomLevel(17);
+        setShowAddress(formattedAddress);
         initMap();
 
 
