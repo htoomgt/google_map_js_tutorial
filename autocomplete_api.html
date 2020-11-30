@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Autocomplete API Test</title>
+    <link rel="shortcut icon" href="./images/favicon.png" type="image/x-icon">
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Style -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Google Map JS-->
+    <script
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgOGbuvuKu-fJmwmzP45Vveq7U4EwLhNk&callback=initMap&libraries=places&v=weekly"
+            defer
+    ></script>
+
+    <!-- Index JS -->
+    <script src="./js/autocomplete_index.js"></script>
+    <!-- Index Style-->
+    <link rel="stylesheet" href="./css/autocomplete_style.css" />
+
+</head>
+<body>
+    <div class="pac-card" id="pac-card">
+        <div>
+            <div id="title">Autocomplete Search</div>
+            <div id="type-selector" class="pac-controls">
+                <input type="radio" name="type" id="changetype-all" checked="checked"/>
+                <label for="changetype-all">All</label>
+
+                <input type="radio" name="type" id="changetype-establishment" />
+                <label for="changetype-establishment">Establishment</label>
+
+                <input type="radio" name="type" id="changetype-address" />
+                <label for="changetype-address">Address</label>
+
+                <input type="radio" name="type" id="changetype-geocode" />
+                <label for="changetype-geocode">Geocode</label>
+
+                <div id="strict-bounds-selector" class="pac-controls">
+                    <input type="checkbox" name="use-strict-bounds" id="use-strict-bounds" value="" />
+                    <label for="use-strict-bounds">Strict Bounds</label>
+                </div>
+            </div>
+            <div id="pac-container">
+                <input id="pac-input" type="text" placeholder="Enter a location" />
+            </div>
+
+        </div>
+    </div>
+    <div id="map"></div>
+    <div id="infowindow-content">
+        <img src="" width="16" height="16" id="place-icon" alt="" />
+        <span id="place-name" class="title"></span><br/>
+        <span id="place-address"></span>
+    </div>
+
+</body>
+</html>
