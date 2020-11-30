@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Geo URL Testing</title>
+
+    <link rel="shortcut icon" href="./images/favicon.png" type="image/x-icon">
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Style -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+
+</head>
+<body>
+    <div class="container">
+        <h1>Geo URL Testing in basic</h1>
+        <hr/>
+
+        <div class="row">
+            <h2> Web URL Testing </h2>
+            <div class="col-12">
+                <ul>
+                    <li>
+                        <a href="http://maps.google.com/maps?q=16.794130,96.170171&z=15">
+                            Latitude and Longitude in map query with marker
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://maps.google.com/?saddr=16.797313,96.176741">
+                            Latitude and Longitude in map query for route with navigate start point
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://maps.google.com/?saddr=16.797313,96.176741&daddr=16.975072,96.123421">
+                            Latitude and Longitude in map query for route with navigate start point and end point
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="row mt-4">
+            <h2> Android Intent Geo URL Testing</h2>
+            <div class="col-12">
+                <ul>
+                    <li>
+                        <a href="geo:0,0?q=16.794130,96.170171?">
+                            Latitude and Longitude in map query with marker
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+</html>
+
+<!--
+    reference_list :
+        - https://stackoverflow.com/questions/10744863/showing-a-marker-at-a-geo-url-in-android-maps
+        - https://en.wikipedia.org/wiki/Geo_URI_scheme
+        - https://developers.google.com/maps/documentation/urls/android-intents
+-->
