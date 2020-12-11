@@ -16,9 +16,16 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+    <!--Axios JS loading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js" integrity="sha512-DZqqY3PiOvTP9HkjIWgjO6ouCbq+dxqWoJZ/Q+zPYNHmlnI2dQnbJ5bxAHpAMw+LXRm4D72EIRXzvcHQtE8/VQ==" crossorigin="anonymous"></script>
+
+    <!-- Google Map JS-->
     <script
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgOGbuvuKu-fJmwmzP45Vveq7U4EwLhNk&callback=initMap&libraries=&v=weekly"
-            defer></script>
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgOGbuvuKu-fJmwmzP45Vveq7U4EwLhNk&callback=initMap&libraries=places&v=weekly"
+            defer
+    ></script>
+
     <script src="https://unpkg.com/@googlemaps/markerclustererplus/dist/index.min.js"></script>
 
 
@@ -39,10 +46,11 @@
 
                     <div class="form-group col-4 ml-4">
                         <label for="txtStartPoint">End Point : </label>
-                        <input type="text" id="txtStartPoint" value="" name="txtEndPoint" />
+                        <input type="text" id="txtEndPoint" value="" name="txtEndPoint" />
                     </div>
 
                     <input type="submit" value="Get Direction" class="btn btn-primary" id="btnGetDirection"> &nbsp;
+                    <input type="button" value="Go to Map" id="btnGoToMapApp" class="btn btn-primary"> &nbsp;
                     <input type="reset" value="Reset" class="btn btn-primary" id="btnGetDirection">
 
 
