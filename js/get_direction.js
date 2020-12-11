@@ -6,6 +6,16 @@ let endCordPoint;
 let mapPinLocation = { lat: 16.8409, lng: 96.1735 };
 let apiKey = "AIzaSyDgOGbuvuKu-fJmwmzP45Vveq7U4EwLhNk";
 let zoomLevel = 0;
+let geolocation = {};
+
+
+let directionService; // for google map direction service
+let directionDisplay; // for google map display rendering
+let onPointChangeHandler; // for point change handler function
+
+
+setLocation(mapPinLocation);
+setZoomLevel(12);
 
 
 
@@ -13,9 +23,6 @@ $(document).ready(function(){
     $("#btnGetDirection").click(function (e){
         e.preventDefault();
         onPointChangeHandler();
-
-
-
     });
 
     $("#btnGoToMapApp").click(function(e){
@@ -29,6 +36,7 @@ $(document).ready(function(){
     });
 
     $("#btnReset").click(function(e){
+        e.preventDefault();
 
         $("#txtStartPoint").val("");
         $("#txtEndPoint").val("");
@@ -56,15 +64,11 @@ $(document).ready(function(){
 
             geolocation = response.data.results[0].geometry.location;
 
-
-
-
             setLocation(geolocation);
             startCordPoint = geolocation;
 
             setZoomLevel(17);
             setShowAddress(formattedAddress);
-            // onPointChangeHandler();
             initMap();
 
 
@@ -109,8 +113,7 @@ $(document).ready(function(){
 
 });
 
-setLocation(mapPinLocation);
-setZoomLevel(12);
+
 function setLocation(location){
     this.mapPinLocation = location;
 }
@@ -123,16 +126,14 @@ function setShowAddress(address){
     this.showAddress = address;
 }
 
-let directionService;
-let directionDisplay;
-let onPointChangeHandler;
+
 
 
     function initMap() {
 
-    var center = this.mapPinLocation;
-    var zoom = this.zoomLevel;
-    var showAddress = this.showAddress;
+    let center = this.mapPinLocation;
+    let zoom = this.zoomLevel;
+
 
     let options = {
         center: center,
