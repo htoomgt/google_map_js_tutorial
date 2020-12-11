@@ -12,6 +12,7 @@ let zoomLevel = 0;
 $(document).ready(function(){
     $("#btnGetDirection").click(function (e){
         e.preventDefault();
+        onPointChangeHandler();
 
     });
 
@@ -34,7 +35,10 @@ $(document).ready(function(){
         e.preventDefault();
         $("#txtStartPoint").val("");
         $("#txtEndPoint").val("");
+
+        document.getElementById("map").innerHTML = "";
         setLocation({ lat: 16.8409, lng: 96.1735 });
+        //setStartMarkerPoint
         setZoomLevel(12);
         initMap();
 
@@ -66,6 +70,7 @@ $(document).ready(function(){
             //setStartMarkerPoint
             setZoomLevel(17);
             setShowAddress(formattedAddress);
+            // onPointChangeHandler();
             initMap();
 
 
@@ -132,14 +137,16 @@ function setShowAddress(address){
     this.showAddress = address;
 }
 
+let directionService;
+let directionDisplay;
+let onPointChangeHandler;
 
-function initMap() {
+
+    function initMap() {
 
     var center = this.mapPinLocation;
     var zoom = this.zoomLevel;
     var showAddress = this.showAddress;
-
-
 
     let options = {
         center: center,
@@ -147,6 +154,48 @@ function initMap() {
     };
 
     map = new google.maps.Map(document.getElementById("map"), options);
+
+    directionService = new google.maps.DirectionsService();
+    directionDisplay = new google.maps.DirectionsRenderer();
+
+    directionDisplay.setMap(map);
+
+    onPointChangeHandler = function() {
+        calculateAndDisplayRoute(directionService, directionDisplay);
+    }
+
+        function calculateAndDisplayRoute(varDirectionService, varDirectionDisplay) {
+            startPoint  = document.getElementById("txtStartPoint").value;
+            endPoint = document.getElementById("txtEndPoint").value;
+            if(startPoint !== "" && endPoint !== ""){
+                varDirectionService.route(
+                    {
+                        origin: {
+                            query: document.getElementById("txtStartPoint").value,
+                        },
+                        destination: {
+                            query: document.getElementById("txtEndPoint").value,
+                        },
+                        travelMode: google.maps.TravelMode.DRIVING,
+                    },
+                    (response, status) => {
+                        console.log(response);
+                        console.log(status);
+                        if (status === "OK") {
+                            varDirectionDisplay.setDirections(response);
+                        } else {
+                            window.alert("Directions request failed due to " + status);
+                        }
+                    }
+                );
+            }
+
+        }
+
+
+
+
+
 
     let startPointVal = document.getElementById("txtStartPoint");
     let endPointVal = document.getElementById("txtEndPoint");
