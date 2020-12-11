@@ -1,12 +1,14 @@
 let map;
 let autoCompleteStartPoint;
 let autoCompleteEndPoint;
-let startCordPoint;
-let endCordPoint;
+let startCordPoint = null;
+let endCordPoint = null;
 let mapPinLocation = { lat: 16.8409, lng: 96.1735 };
 let apiKey = "AIzaSyDgOGbuvuKu-fJmwmzP45Vveq7U4EwLhNk";
 let zoomLevel = 0;
 let geolocation = {};
+let startPointMarker;
+let endPointMarker;
 
 
 let directionService; // for google map direction service
@@ -22,7 +24,7 @@ setZoomLevel(12);
 $(document).ready(function(){
     $("#btnGetDirection").click(function (e){
         e.preventDefault();
-        onPointChangeHandler();
+        onPointChangeHandler(endCordPoint);
     });
 
     $("#btnGoToMapApp").click(function(e){
@@ -97,6 +99,7 @@ $(document).ready(function(){
             setLocation(geolocation);
             endCordPoint = geolocation;
 
+
             setZoomLevel(17);
             setShowAddress(formattedAddress);
             initMap();
@@ -138,6 +141,7 @@ function setShowAddress(address){
     let options = {
         center: center,
         zoom: zoom,
+        disableDoubleClickZoom: true
     };
 
     map = new google.maps.Map(document.getElementById("map"), options);
@@ -149,29 +153,32 @@ function setShowAddress(address){
 
     directionDisplay.setMap(map);
 
-    onPointChangeHandler = function() {
-        calculateAndDisplayRoute(directionService, directionDisplay);
+    onPointChangeHandler = function(varEndCordPoint) {
+        // console.log(varEndCordPoint);
+        calculateAndDisplayRoute(directionService, directionDisplay, varEndCordPoint);
     }
 
-        function calculateAndDisplayRoute(varDirectionService, varDirectionDisplay) {
-            startPoint  = document.getElementById("txtStartPoint").value;
-            endPoint = document.getElementById("txtEndPoint").value;
+        function calculateAndDisplayRoute(varDirectionService, varDirectionDisplay, varrEndCordPoint) {
+            let startPoint  = document.getElementById("txtStartPoint").value;
+            let endPoint = document.getElementById("txtEndPoint").value;
             if(startPoint !== "" && endPoint !== ""){
                 varDirectionService.route(
                     {
                         origin: {
-                            query: document.getElementById("txtStartPoint").value,
+                            query: startPoint
                         },
                         destination: {
-                            query: document.getElementById("txtEndPoint").value,
+                          query : endPoint
                         },
+
                         travelMode: google.maps.TravelMode.DRIVING,
                     },
                     (response, status) => {
-                        console.log(response);
-                        console.log(status);
                         if (status === "OK") {
                             varDirectionDisplay.setDirections(response);
+
+
+
                         } else {
                             window.alert("Directions request failed due to " + status);
                         }
@@ -201,15 +208,47 @@ function setShowAddress(address){
     autoCompleteStartPoint.setFields(["address_components", "geometry", "icon", "name"]);
     autoCompleteEndPoint.setFields(["address_components", "geometry", "icon", "name"]);
 
-    if(startCordPoint !== ""){
+    if(startCordPoint !== null){
         let props = { coords : {lat: startCordPoint.lat, lng : startCordPoint.lng}};
         addMarker(props);
     }
 
-    if(endCordPoint !== ""){
+    if(endCordPoint !== null){
         let props = { coords : {lat: endCordPoint.lat, lng : endCordPoint.lng}, content : "point-B"};
-        addMarker(props);
+        endPointMarker = addMarker(props);
     }
+
+    google.maps.event.addListener(map, 'dblclick', function (event) {
+        if(endPointMarker !== ""){
+            endPointMarker.setMap(null);
+        }
+
+        endPointMarker = addMarker({ coords: event.latLng, content : "point-B" });
+        // console.log(endPointMarker);
+
+        axios.get('https://maps.googleapis.com/maps/api/geocode/json?', {
+            params: {
+                address: event.latLng,
+                key: apiKey
+            }
+        }).then(function (response){
+
+            if(response.data.results.length > 0){
+                document.getElementById("txtEndPoint").value = response.data.results[0].formatted_address;
+            }
+            else{
+                let locationToUpdate =event.latLng;
+                endCordPoint = {lat : locationToUpdate.lat(), lng: locationToUpdate.lng()};
+                document.getElementById("txtEndPoint").value = endCordPoint.lat+","+endCordPoint.lng;
+            }
+
+        }).catch(function(error){
+            alert("Error is "+error)
+        });
+
+
+
+    });
 
         //Add Marker Funciton
         function addMarker(props) {
