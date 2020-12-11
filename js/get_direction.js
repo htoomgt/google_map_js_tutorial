@@ -14,31 +14,29 @@ $(document).ready(function(){
         e.preventDefault();
         onPointChangeHandler();
 
+
+
     });
 
     $("#btnGoToMapApp").click(function(e){
-        let startPointValue = $("#txtStartPoint").val();
-        let endPointValue = $("#txtEndPoint").val();
-        // startCordPoint = "converted lat,lng";
-        // endCordPoint = "converted lat, lng";
-        console.log(startPointValue);
+
         startLatLng = ""+startCordPoint.lat+","+startCordPoint.lng+"";
         endLatLng = ""+endCordPoint.lat+","+endCordPoint.lng+"";
 
         let URLToGo = "http://maps.google.com/?saddr="+startLatLng+"&daddr="+endLatLng;
-        console.log(URLToGo);
         window.location=URLToGo;
 
     });
 
     $("#btnReset").click(function(e){
-        e.preventDefault();
+
         $("#txtStartPoint").val("");
         $("#txtEndPoint").val("");
 
         document.getElementById("map").innerHTML = "";
+        startCordPoint = {};
+        endCordPoint = {};
         setLocation({ lat: 16.8409, lng: 96.1735 });
-        //setStartMarkerPoint
         setZoomLevel(12);
         initMap();
 
@@ -52,22 +50,18 @@ $(document).ready(function(){
                 key: apiKey
             }
         }).then(function (response){
-            //Log full response
-            // console.log(response);
 
             //Formatted address
             let formattedAddress = response.data.results[0].formatted_address;
 
-
-
             geolocation = response.data.results[0].geometry.location;
-            console.log(geolocation);
 
 
-            // document.getElementById('map').innerHTML="";
+
+
             setLocation(geolocation);
             startCordPoint = geolocation;
-            //setStartMarkerPoint
+
             setZoomLevel(17);
             setShowAddress(formattedAddress);
             // onPointChangeHandler();
@@ -91,22 +85,14 @@ $(document).ready(function(){
                 key: apiKey
             }
         }).then(function (response){
-            //Log full response
-            // console.log(response);
-
-            //Formatted address
             let formattedAddress = response.data.results[0].formatted_address;
-
-
-
             geolocation = response.data.results[0].geometry.location;
-            console.log(geolocation);
 
 
-            // document.getElementById('map').innerHTML="";
+
             setLocation(geolocation);
             endCordPoint = geolocation;
-            //setStartMarkerPoint
+
             setZoomLevel(17);
             setShowAddress(formattedAddress);
             initMap();
@@ -157,6 +143,8 @@ let onPointChangeHandler;
 
     directionService = new google.maps.DirectionsService();
     directionDisplay = new google.maps.DirectionsRenderer();
+    let trafficLayer = new google.maps.TrafficLayer();
+    trafficLayer.setMap(map);
 
     directionDisplay.setMap(map);
 
