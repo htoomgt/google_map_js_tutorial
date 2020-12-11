@@ -212,6 +212,50 @@ let onPointChangeHandler;
     autoCompleteStartPoint.setFields(["address_components", "geometry", "icon", "name"]);
     autoCompleteEndPoint.setFields(["address_components", "geometry", "icon", "name"]);
 
+    if(startCordPoint !== ""){
+        let props = { coords : {lat: startCordPoint.lat, lng : startCordPoint.lng}};
+        addMarker(props);
+    }
+
+    if(endCordPoint !== ""){
+        let props = { coords : {lat: endCordPoint.lat, lng : endCordPoint.lng}};
+        addMarker(props);
+    }
+
+        //Add Marker Funciton
+        function addMarker(props) {
+
+            var marker = new google.maps.Marker({
+                position: props.coords,
+                map: map,
+
+
+            });
+
+            //Check if lablel
+            if (props.label) {
+                marker.setLabel(props.label);
+            }
+
+            //Check if for custom
+            if (props.icon) {
+                //set icon
+                marker.setIcon(props.icon);
+            }
+
+            //Check content
+            if (props.content) {
+                var infoWindow = new google.maps.InfoWindow({
+                    content: props.content
+                });
+
+                marker.addListener('click', function () {
+                    infoWindow.open(map, marker);
+                });
+            }
+            return marker;
+        }
+
 
 
 }
