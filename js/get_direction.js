@@ -207,7 +207,7 @@ function setShowAddress(address){
     }
 
     if(endCordPoint !== ""){
-        let props = { coords : {lat: endCordPoint.lat, lng : endCordPoint.lng}};
+        let props = { coords : {lat: endCordPoint.lat, lng : endCordPoint.lng}, content : "point-B"};
         addMarker(props);
     }
 
@@ -234,13 +234,21 @@ function setShowAddress(address){
 
             //Check content
             if (props.content) {
-                var infoWindow = new google.maps.InfoWindow({
-                    content: props.content
+                // var infoWindow = new google.maps.InfoWindow({
+                //     content: props.content
+                // });
+                //
+                // marker.addListener('click', function () {
+                //     infoWindow.open(map, marker);
+                // });
+                marker.addListener('click', function () {
+                    startLatLng = ""+startCordPoint.lat+","+startCordPoint.lng+"";
+                    endLatLng = ""+endCordPoint.lat+","+endCordPoint.lng+"";
+
+                    let URLToGo = "http://maps.google.com/?saddr="+startLatLng+"&daddr="+endLatLng;
+                    window.location=URLToGo;
                 });
 
-                marker.addListener('click', function () {
-                    infoWindow.open(map, marker);
-                });
             }
             return marker;
         }
