@@ -9,6 +9,8 @@ let zoomLevel = 0;
 let geolocation = {};
 let startPointMarker;
 let endPointMarker;
+let clearMarkerPoints = function(){};
+let removedMarkersReset = function(){};
 
 
 let directionService; // for google map direction service
@@ -24,6 +26,8 @@ setZoomLevel(12);
 $(document).ready(function(){
     $("#btnGetDirection").click(function (e){
         e.preventDefault();
+        $("#route_panel").html("");
+        clearMarkerPoints();
         onPointChangeHandler(endCordPoint);
     });
 
@@ -42,13 +46,16 @@ $(document).ready(function(){
 
         $("#txtStartPoint").val("");
         $("#txtEndPoint").val("");
+        $("#route_panel").html("");
 
         document.getElementById("map").innerHTML = "";
-        startCordPoint = {};
-        endCordPoint = {};
+        startCordPoint = null;
+        endCordPoint = null;
+
         setLocation({ lat: 16.8409, lng: 96.1735 });
         setZoomLevel(12);
         initMap();
+        removedMarkersReset();
 
     });
 
@@ -136,7 +143,8 @@ function setShowAddress(address){
 
     let center = this.mapPinLocation;
     let zoom = this.zoomLevel;
-
+    let markers = [];
+    let geocoder = new google.maps.Geocoder;
 
     let options = {
         center: center,
@@ -147,18 +155,18 @@ function setShowAddress(address){
     map = new google.maps.Map(document.getElementById("map"), options);
 
     directionService = new google.maps.DirectionsService();
-    directionDisplay = new google.maps.DirectionsRenderer();
+    directionDisplay = new google.maps.DirectionsRenderer({ draggable : true, map,panel: document.getElementById("route_panel"),});
     let trafficLayer = new google.maps.TrafficLayer();
     trafficLayer.setMap(map);
 
     directionDisplay.setMap(map);
 
-    onPointChangeHandler = function(varEndCordPoint) {
+    onPointChangeHandler = function() {
         // console.log(varEndCordPoint);
-        calculateAndDisplayRoute(directionService, directionDisplay, varEndCordPoint);
+        calculateAndDisplayRoute(directionService, directionDisplay);
     }
 
-        function calculateAndDisplayRoute(varDirectionService, varDirectionDisplay, varrEndCordPoint) {
+        function calculateAndDisplayRoute(varDirectionService, varDirectionDisplay) {
             let startPoint  = document.getElementById("txtStartPoint").value;
             let endPoint = document.getElementById("txtEndPoint").value;
             if(startPoint !== "" && endPoint !== ""){
@@ -170,13 +178,18 @@ function setShowAddress(address){
                         destination: {
                           query : endPoint
                         },
-
+                        provideRouteAlternatives: true,
+                        optimizeWaypoints: true,
                         travelMode: google.maps.TravelMode.DRIVING,
+                        drivingOptions : {
+                            departureTime: new Date(Date.now()),
+                            trafficModel: 'optimistic'
+                        }
                     },
                     (response, status) => {
                         if (status === "OK") {
                             varDirectionDisplay.setDirections(response);
-
+                            // console.log(response);
 
 
                         } else {
@@ -199,6 +212,8 @@ function setShowAddress(address){
 
 
 
+
+
     autoCompleteStartPoint = new google.maps.places.Autocomplete(startPointVal);
     autoCompleteEndPoint = new google.maps.places.Autocomplete(endPointVal);
 
@@ -208,20 +223,44 @@ function setShowAddress(address){
     autoCompleteStartPoint.setFields(["address_components", "geometry", "icon", "name"]);
     autoCompleteEndPoint.setFields(["address_components", "geometry", "icon", "name"]);
 
+        autoCompleteStartPoint.setComponentRestrictions({
+            country: ["mm"],
+        });
+
+        autoCompleteEndPoint.setComponentRestrictions({
+            country: ["mm"],
+        });
+
     if(startCordPoint !== null){
         let props = { coords : {lat: startCordPoint.lat, lng : startCordPoint.lng}};
-        addMarker(props);
+        startPointMarker=addMarker(props);
+        google.maps.event.addListener(startPointMarker,'mouseup', function(event){
+            // console.log(event);
+            let locationToUpdate =event.latLng;
+            startPointMarker = {lat : locationToUpdate.lat(), lng: locationToUpdate.lng()};
+            document.getElementById("txtStartPoint").value = endCordPoint.lat+","+endCordPoint.lng;
+        });
     }
 
     if(endCordPoint !== null){
         let props = { coords : {lat: endCordPoint.lat, lng : endCordPoint.lng}, content : "point-B"};
         endPointMarker = addMarker(props);
+
+        google.maps.event.addListener(endPointMarker,'mouseup', function(event){
+            // console.log(event);
+            let locationToUpdate =event.latLng;
+            endCordPoint = {lat : locationToUpdate.lat(), lng: locationToUpdate.lng()};
+            document.getElementById("txtEndPoint").value = endCordPoint.lat+","+endCordPoint.lng;
+        });
     }
+
+
 
     google.maps.event.addListener(map, 'dblclick', function (event) {
         if(endPointMarker !== ""){
             endPointMarker.setMap(null);
         }
+
 
         endPointMarker = addMarker({ coords: event.latLng, content : "point-B" });
         // console.log(endPointMarker);
@@ -240,6 +279,7 @@ function setShowAddress(address){
                 let locationToUpdate =event.latLng;
                 endCordPoint = {lat : locationToUpdate.lat(), lng: locationToUpdate.lng()};
                 document.getElementById("txtEndPoint").value = endCordPoint.lat+","+endCordPoint.lng;
+                // document.getElementById("txtEndPoint").value = geocodingLatLng(endCordPoint);
             }
 
         }).catch(function(error){
@@ -256,7 +296,7 @@ function setShowAddress(address){
             var marker = new google.maps.Marker({
                 position: props.coords,
                 map: map,
-
+                draggable:true
 
             });
 
@@ -273,13 +313,6 @@ function setShowAddress(address){
 
             //Check content
             if (props.content) {
-                // var infoWindow = new google.maps.InfoWindow({
-                //     content: props.content
-                // });
-                //
-                // marker.addListener('click', function () {
-                //     infoWindow.open(map, marker);
-                // });
                 marker.addListener('click', function () {
                     startLatLng = ""+startCordPoint.lat+","+startCordPoint.lng+"";
                     endLatLng = ""+endCordPoint.lat+","+endCordPoint.lng+"";
@@ -289,7 +322,58 @@ function setShowAddress(address){
                 });
 
             }
+            markers.push(marker);
             return marker;
+        }
+
+        google.maps.event.addListener(directionDisplay, 'directions_changed',
+            function() {
+                // let direction_request;
+                // direction_request = directionDisplay.directions.request;
+                if( directionDisplay.directions.request !== typeof undefined) {
+
+                    if (!directionDisplay.directions.request.origin.query) {
+                        // console.log(directionDisplay.directions.request.origin);
+                        let locationToUpdate = directionDisplay.directions.request.origin;
+                        startCordPoint = {lat: locationToUpdate.lat(), lng: locationToUpdate.lng()};
+                        document.getElementById("txtStartPoint").value = endCordPoint.lat + "," + endCordPoint.lng;
+                    }
+
+
+                    if (!directionDisplay.directions.request.destination.query) {
+                        // console.log(directionDisplay.directions.request.destination);
+                        let locationToUpdate = directionDisplay.directions.request.destination;
+                        endCordPoint = {lat: locationToUpdate.lat(), lng: locationToUpdate.lng()};
+                        document.getElementById("txtEndPoint").value = endCordPoint.lat + "," + endCordPoint.lng;
+                    }
+
+                }
+            });
+
+
+        function setMapOnAll(map) {
+            for (let i = 0; i < markers.length; i++) {
+                markers[i].setMap(map);
+            }
+        }
+
+        clearMarkerPoints = function(){
+            setMapOnAll(null);
+        }
+
+        removedMarkersReset = function(){
+            markers = [];
+            clearMarkerPoints();
+            // console.log("reset the marker");
+        }
+        // geocodingLatLng(mapPinLocation);
+
+        function geocodingLatLng(postion){
+            geocoder.geocode({'location': postion}, function(results, status){
+               if(status == 'OK'){
+                   console.log(results);
+               }
+            });
         }
 
 
