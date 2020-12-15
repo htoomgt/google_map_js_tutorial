@@ -33,7 +33,9 @@
 
                     <div class="form-group">
                         <label for="user_entry_location"> User Entry Location </label> <br/>
-                        <input type="text" class="form-control d-inline-input" value="" placeholder="use current location or enter your address"/>
+                        <input type="text" class="form-control d-inline-input" value="" id="txt_user_location" placeholder="use current location or enter your address"/>
+                        <input type="hidden" id="json_current_lat" value=""/>
+                        <input type="hidden" id="json_current_lng" value=""/>
                         <button type="button" id="get_current_location" class="button-align-to-input-box"><i class="fas fa-location"></i></button>
                     </div>
 
@@ -41,7 +43,7 @@
                 </div>
                 <div class="col-4 col-lg-4">
                     <div class="form-group">
-                        <input type="submit" value="Save Location" class="btn btn-primary btn-save"/>
+                        <input type="submit" value="Save Location" class="btn btn-primary btn-save" id="btnSaveLocation"/>
                     </div>
                 </div>
             </form>
