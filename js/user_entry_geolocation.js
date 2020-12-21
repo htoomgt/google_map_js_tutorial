@@ -21,13 +21,31 @@ function initMap(){
         center : center,
         zoom : zoom,
         draggable: true,
-        mapTypeId: google.maps.MapTypeId.HYBRID
+        mapTypeId: google.maps.MapTypeId.HYBRID // satellite and map view
     }
     map = new google.maps.Map(document.getElementById('map'), options);
+
+    /*google.maps.event.addListener(currentLocationMarker, 'dragend', function () {
+        map.setCenter(this.getPosition()); // Set map center to marker position
+        let posStr = this.getCenter().lat() + "," + this.getCenter().lng();
+        // txtUserLocation.value = posStr;
+        // updatePosition(this.getPosition().lat(), this.getPosition().lng()); // update position display
+    });
+
+    google.maps.event.addListener(map, 'dragend', function () {
+        currentLocationMarker.setPosition(this.getCenter()); // set marker position to map center
+        let posStr = this.getCenter().lat() + "," + this.getCenter().lng();
+        // txtUserLocation.value = posStr;
+        // updatePosition(this.getCenter().lat(), this.getCenter().lng()); // update position display
+    });*/
 
 
     //get current location and map settings
     getCurrentLocation = () => {
+        if(currentLocationMarker){
+            currentLocationMarker.setMap(null);
+        }
+
         if(navigator.geolocation){
             navigator.geolocation.getCurrentPosition(
                 (position )=> {
@@ -86,6 +104,10 @@ function initMap(){
         }
         markers.push(marker);
         return marker;
+    }
+
+    function clearMarkers() {
+        setMapOnAll(null);
     }
 
 
