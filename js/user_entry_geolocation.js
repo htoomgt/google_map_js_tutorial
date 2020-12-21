@@ -20,6 +20,8 @@ function initMap(){
     let options = {
         center : center,
         zoom : zoom,
+        draggable: true,
+        mapTypeId: google.maps.MapTypeId.HYBRID
     }
     map = new google.maps.Map(document.getElementById('map'), options);
 
