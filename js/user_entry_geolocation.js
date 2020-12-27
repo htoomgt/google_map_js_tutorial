@@ -7,7 +7,7 @@ let map;
 let markers = [];
 
 setLocation({ lat: 16.8409, lng: 96.1735 });
-setZoomLevel(12);
+setZoomLevel(15);
 
 function initMap(){
     let center = this.mapPinLocation;
@@ -21,23 +21,17 @@ function initMap(){
         center : center,
         zoom : zoom,
         draggable: true,
-        mapTypeId: google.maps.MapTypeId.HYBRID // satellite and map view
+        // mapTypeId: google.maps.MapTypeId.HYBRID // satellite and map view
     }
     map = new google.maps.Map(document.getElementById('map'), options);
 
-    /*google.maps.event.addListener(currentLocationMarker, 'dragend', function () {
-        map.setCenter(this.getPosition()); // Set map center to marker position
-        let posStr = this.getCenter().lat() + "," + this.getCenter().lng();
-        // txtUserLocation.value = posStr;
-        // updatePosition(this.getPosition().lat(), this.getPosition().lng()); // update position display
-    });
 
-    google.maps.event.addListener(map, 'dragend', function () {
-        currentLocationMarker.setPosition(this.getCenter()); // set marker position to map center
-        let posStr = this.getCenter().lat() + "," + this.getCenter().lng();
-        // txtUserLocation.value = posStr;
-        // updatePosition(this.getCenter().lat(), this.getCenter().lng()); // update position display
-    });*/
+
+
+
+
+
+
 
 
     //get current location and map settings
@@ -63,7 +57,7 @@ function initMap(){
                     jsonCurrentLng.value = position.coords.longitude;
 
                     map.setCenter(currentLocation);
-                    map.setZoom(17)
+                    map.setZoom(19);
 
 
                 },
@@ -73,6 +67,30 @@ function initMap(){
             )
         }
     }
+    getCurrentLocation();
+
+    if(currentLocationMarker){
+        google.maps.event.addListener(currentLocationMarker, 'dragend', function () {
+            map.setCenter(this.getPosition()); // Set map center to marker position
+            let posStr = this.getCenter().lat() + "," + this.getCenter().lng();
+            console.log(posStr);
+            // txtUserLocation.value = posStr;
+            // updatePosition(this.getPosition().lat(), this.getPosition().lng()); // update position display
+        });
+    }
+
+    google.maps.event.addListener(map, 'dragend', function () {
+        currentLocationMarker.setPosition(this.getCenter()); // set marker position to map center
+        let posStr = this.getCenter().lat() + "," + this.getCenter().lng();
+        txtUserLocation.value = posStr;
+        let updatedLocation = {lat : this.getCenter().lat(), lng: this.getCenter().lng()};
+        // setCurrentLocation(updatedLocation);
+        document.getElementById("json_current_lat").value = updatedLocation.lat;
+        document.getElementById("json_current_lng").value = updatedLocation.lng;
+
+        // setLocation(updatedLocation);
+        // updatePosition(this.getCenter().lat(), this.getCenter().lng()); // update position display
+    });
 
     function addMarker(props) {
 
@@ -123,6 +141,7 @@ function setLocation(location){
 
 function setCurrentLocation(location){
     this.currentLocation = location;
+    console.log(this.currentLocation);
 }
 
 function setZoomLevel(zoomLvl){
@@ -140,15 +159,15 @@ $(document).ready(function(){
          let currentLng = $("#json_current_lng").val();
          currentLocation = { lat : currentLat, lng : currentLng};
          setLocation(currentLocation);
-         // console.log(currentLocation);
+         console.log(currentLocation);
 
          // let defaultLocation = require('../storage/user_entry_geolocation.json');
          // console.log(defaultLocation);
          let currentURL = window.location.href;
          let currentHostSegment = currentURL.replace("user_entry_geolocation.html?#", "");
          let phpSetUserLocationURL = currentHostSegment + "php/user_entry_location.php?action=setLocation";
-         // console.log(phpSetUserLocationURL);
-
+         // console.log(phpSetUserLocationURL); exit;
+        // console.log(this.currentLocation);
          $.ajax({
              url : phpSetUserLocationURL,
              method : 'POST',

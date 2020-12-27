@@ -8,10 +8,14 @@ if(isset($_REQUEST['action']) && $_REQUEST['action'] == 'setLocation'){
 
 
 
+
+
     $contentToPut = [
         "lat" => $currentLat,
         "lng" => $currentLng
     ];
+
+
 
     $jsonContentToPut = json_encode($contentToPut);
     file_put_contents($fileLocation,"");
