@@ -25,7 +25,58 @@ function initMap(){
     }
     map = new google.maps.Map(document.getElementById('map'), options);
 
+    const autocomplete = new google.maps.places.Autocomplete(txtUserLocation);
+    // bounds option in the request.
+    autocomplete.bindTo("bounds", map);
 
+    // Set the data fields to return when the user selects a place.
+    autocomplete.setFields(["address_components", "geometry", "icon", "name"]);
+
+    //
+    autocomplete.addListener("place_changed", () => {
+        // infowindow.close();
+        currentLocationMarker.setVisible(false);
+        const place = autocomplete.getPlace();
+
+        if (!place.geometry) {
+            // User entered the name of a Place that was not suggested and
+            // pressed the Enter key, or the Place Details request failed.
+            window.alert("No details available for input: '" + place.name + "'");
+            return;
+        }
+
+        // If the place has a geometry, then present it on a map.
+        if (place.geometry.viewport) {
+            map.fitBounds(place.geometry.viewport);
+        } else {
+            map.setCenter(place.geometry.location);
+            map.setZoom(17); // Why 17? Because it looks good.
+        }
+        console.log(place.geometry.location.lat());
+        document.getElementById("json_current_lat").value =place.geometry.location.lat();
+        document.getElementById("json_current_lng").value = place.geometry.location.lng();
+        currentLocationMarker.setPosition(place.geometry.location);
+        currentLocationMarker.setVisible(true);
+        let address = "";
+
+        if (place.address_components) {
+            address = [
+                (place.address_components[0] &&
+                    place.address_components[0].short_name) ||
+                "",
+                (place.address_components[1] &&
+                    place.address_components[1].short_name) ||
+                "",
+                (place.address_components[2] &&
+                    place.address_components[2].short_name) ||
+                "",
+            ].join(" ");
+        }
+        // infowindowContent.children["place-icon"].src = place.icon;
+        // infowindowContent.children["place-name"].textContent = place.name;
+        // infowindowContent.children["place-address"].textContent = address;
+        // infowindow.open(map, marker);
+    });
 
 
 
@@ -74,7 +125,7 @@ function initMap(){
             map.setCenter(this.getPosition()); // Set map center to marker position
             let posStr = this.getCenter().lat() + "," + this.getCenter().lng();
             console.log(posStr);
-            // txtUserLocation.value = posStr;
+            txtUserLocation.value = posStr;
             // updatePosition(this.getPosition().lat(), this.getPosition().lng()); // update position display
         });
     }
@@ -82,7 +133,7 @@ function initMap(){
     google.maps.event.addListener(map, 'dragend', function () {
         currentLocationMarker.setPosition(this.getCenter()); // set marker position to map center
         let posStr = this.getCenter().lat() + "," + this.getCenter().lng();
-        txtUserLocation.value = posStr;
+        // txtUserLocation.value = posStr;
         let updatedLocation = {lat : this.getCenter().lat(), lng: this.getCenter().lng()};
         // setCurrentLocation(updatedLocation);
         document.getElementById("json_current_lat").value = updatedLocation.lat;
@@ -152,6 +203,11 @@ $(document).ready(function(){
      $("#get_current_location").click(function(){
          getCurrentLocation();
 
+     });
+
+     $("#txt_user_location").click(function(){
+
+        $(this).val("");
      });
 
      $("#btnSaveLocation").click(function(){
