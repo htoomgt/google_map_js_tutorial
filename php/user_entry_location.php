@@ -20,7 +20,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action'] == 'setLocation'){
     $jsonContentToPut = json_encode($contentToPut);
     file_put_contents($fileLocation,"");
     file_put_contents($fileLocation,$jsonContentToPut);
-    fclose($fileLocation);
+//    fclose($fileLocation);
     $location = file_get_contents($fileLocation);
     $location = json_decode($location, JSON_UNESCAPED_SLASHES);
 
